@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jalur Gemilang - Uji Minda</title>
+    <title>Jalur Gemilang - Cabaran 2 Minit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* ===== 蓝金铭牌风格 (Jalur Gemilang 专属) ===== */
+        /* ===== Gaya Tanda Emas & Biru (tidak berubah) ===== */
         :root {
             --void: #050508;
             --void-2: #0b0c14;
@@ -20,7 +20,6 @@
             --gold-line: rgba(255, 204, 0, 0.4);
             --blue: #003366;
             --blue-bright: #1a4f8a;
-            --blue-dim: #002244;
             --blue-line: rgba(0, 51, 102, 0.5);
             --maroon: #7d2836;
             --maroon-bright: #e0576e;
@@ -71,7 +70,7 @@
             100% { opacity: 1; }
         }
 
-        /* ===== 状态栏 ===== */
+        /* ===== Bar Status ===== */
         #status-bar {
             position: absolute;
             top: 24px;
@@ -104,6 +103,18 @@
             -webkit-text-fill-color: transparent;
             cursor: default;
             user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .status-title .progress-text {
+            font-size: 14px;
+            opacity: 0.7;
+            font-family: var(--font-mono);
+            color: var(--gold-bright);
+            -webkit-text-fill-color: var(--gold-bright);
+            background: none;
         }
         .status-title.dbl-click-hint { cursor: pointer; }
         .status-title.dbl-click-hint::after { content: '⏎'; font-size: 10px; color: #555; margin-left: 4px; opacity: 0.3; }
@@ -196,13 +207,11 @@
             display: inline-block !important;
             font-size: 18px;
             line-height: 1;
-            animation: micPulse 1.5s infinite;
+            transition: color 0.3s;
         }
-        @keyframes micPulse {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
-        }
+        #mic-status.active { color: #ffcc00; animation: micPulse 1.5s infinite; }
+        #mic-status.inactive { color: #555; animation: none; opacity: 0.5; }
+        @keyframes micPulse { 0%{opacity:0.7;}50%{opacity:1;}100%{opacity:0.7;} }
         #camera-error {
             font-size: 11px;
             color: #ff6b6b;
@@ -211,7 +220,7 @@
             text-align: left;
         }
 
-        /* ===== 黄色专用按钮 ===== */
+        /* ===== Butang Kuning (kiri bawah) ===== */
         #btn-yellow {
             position: absolute;
             bottom: 120px;
@@ -234,21 +243,12 @@
             align-items: center;
             gap: 10px;
         }
-        #btn-yellow::before {
-            content: '🟡';
-            font-size: 22px;
-        }
-        #btn-yellow:hover {
-            transform: scale(1.06);
-            box-shadow: 0 12px 40px rgba(255, 204, 0, 0.6);
-        }
+        #btn-yellow::before { content: '🟡'; font-size: 22px; }
+        #btn-yellow:hover { transform: scale(1.06); box-shadow: 0 12px 40px rgba(255,204,0,0.6); }
         #btn-yellow:active { transform: scale(0.95); }
-        #btn-yellow.active-mode {
-            border-color: #fff;
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.8), 0 0 60px rgba(255, 204, 0, 0.3);
-        }
+        #btn-yellow.active-mode { border-color: #fff; box-shadow: 0 0 30px rgba(255,204,0,0.8),0 0 60px rgba(255,204,0,0.3); }
 
-        /* ===== 开始面板 ===== */
+        /* ===== Panel Mula ===== */
         #start-panel {
             position: fixed;
             top: 0; left: 0;
@@ -441,7 +441,7 @@
         }
         .step-dot.done { background: var(--gold-dim); }
 
-        /* ===== 信息面板 ===== */
+        /* ===== Panel Maklumat ===== */
         #info-panel {
             position: absolute;
             bottom: 34px;
@@ -537,93 +537,16 @@
             transform: rotate(90deg);
         }
 
-        /* ===== 胜利画面 ===== */
-        #victory-screen {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.6);
-            background: linear-gradient(160deg, #0a1420, #05080c 85%);
-            border: 2px solid #ffcc00;
-            border-radius: 40px;
-            padding: 64px 56px 44px;
-            text-align: center;
-            box-shadow: 0 40px 130px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 204, 0, 0.1);
-            z-index: 3000;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-            max-width: 90vw;
-        }
-        #victory-screen.active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            pointer-events: auto;
-        }
-        #victory-screen .trophy {
-            font-size: 46px;
-            margin-top: -32px;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 24px rgba(255, 204, 0, 0.6));
-        }
-        #victory-screen h1 {
-            margin: 0;
-            font-family: var(--font-display);
-            font-size: clamp(38px, 7vw, 62px);
-            font-weight: 800;
-            background: linear-gradient(to bottom, var(--ivory) 20%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 3px;
-        }
-        #victory-screen .sub {
-            font-size: clamp(15px, 2vw, 20px);
-            color: var(--ink);
-            margin: 12px 0 24px;
-            font-family: var(--font-body);
-        }
-        .victory-score {
-            display: inline-block;
-            font-family: var(--font-mono);
-            font-size: 22px;
-            color: var(--gold-bright);
-            margin-bottom: 30px;
-            font-weight: 700;
-            padding: 10px 22px;
-            border: 1px solid var(--gold-line);
-            border-radius: 12px;
-        }
-        #btn-replay-ui {
-            display: inline-block;
-            position: relative;
-            padding: 16px 44px;
-            border: 1px solid var(--gold);
-            border-radius: 60px;
-            color: var(--gold-bright);
-            font-family: var(--font-display);
-            font-size: clamp(16px, 2vw, 20px);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            transition: 0.25s;
-            cursor: pointer;
-            touch-action: manipulation;
-            background: rgba(255, 204, 0, 0.07);
-        }
-        #btn-replay-ui:hover,
-        #btn-replay-ui:active {
-            background: var(--gold-bright);
-            color: #16110a;
-            transform: scale(1.05);
-            box-shadow: 0 10px 34px rgba(255, 204, 0, 0.4);
-        }
-
-        /* ===== 排行榜 & 记录面板 ===== */
+        /* ===== Papan Pendahulu (Leaderboard) ===== */
         #leaderboard-panel {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 7000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(18px);
+            z-index: 7000;
             display: none;
             align-items: center;
             justify-content: center;
@@ -653,7 +576,11 @@
             padding-bottom: 14px;
             letter-spacing: 0.5px;
         }
-        .leaderboard-card .lb-list { flex: 1; overflow-y: auto; padding-right: 4px; }
+        .leaderboard-card .lb-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
         .leaderboard-card .lb-item {
             display: flex;
             justify-content: space-between;
@@ -729,14 +656,16 @@
             color: var(--gold-bright);
         }
 
-        /* ===== 完整记录 ===== */
+        /* ===== Panel Rekod (Tersembunyi) ===== */
         #records-panel {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 6000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(18px);
+            z-index: 6000;
             display: none;
             align-items: center;
             justify-content: center;
@@ -793,7 +722,11 @@
             border-color: var(--gold-line);
             color: var(--ivory);
         }
-        .records-list-container { flex: 1; overflow-y: auto; margin-bottom: 12px; }
+        .records-list-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 12px;
+        }
         .records-table {
             width: 100%;
             border-collapse: collapse;
@@ -816,7 +749,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
             color: var(--ink);
         }
-        .records-table tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.02); }
+        .records-table tbody tr:nth-child(odd) { background: rgba(255,255,255,0.02); }
         .records-table .badge {
             display: inline-block;
             padding: 3px 14px;
@@ -902,18 +835,86 @@
             color: #7fe8d4;
         }
 
-        /* ===== 闪光 ===== */
-        #flash-effect {
+        /* ===== Skrin Kemenangan ===== */
+        #victory-screen {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: white;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.6);
+            background: linear-gradient(160deg, #0a1420, #05080c 85%);
+            border: 2px solid #ffcc00;
+            border-radius: 40px;
+            padding: 64px 56px 44px;
+            text-align: center;
+            box-shadow: 0 40px 130px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 204, 0, 0.1);
+            z-index: 3000;
             opacity: 0;
             pointer-events: none;
-            z-index: 2000;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            max-width: 90vw;
+        }
+        #victory-screen.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+        #victory-screen .trophy {
+            font-size: 46px;
+            margin-top: -32px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 24px rgba(255, 204, 0, 0.6));
+        }
+        #victory-screen h1 {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: clamp(38px, 7vw, 62px);
+            font-weight: 800;
+            background: linear-gradient(to bottom, var(--ivory) 20%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 3px;
+        }
+        #victory-screen .sub {
+            font-size: clamp(15px, 2vw, 20px);
+            color: var(--ink);
+            margin: 12px 0 24px;
+            font-family: var(--font-body);
+        }
+        .victory-score {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 22px;
+            color: var(--gold-bright);
+            margin-bottom: 30px;
+            font-weight: 700;
+            padding: 10px 22px;
+            border: 1px solid var(--gold-line);
+            border-radius: 12px;
+        }
+        #btn-replay-ui {
+            display: inline-block;
+            position: relative;
+            padding: 16px 44px;
+            border: 1px solid var(--gold);
+            border-radius: 60px;
+            color: var(--gold-bright);
+            font-family: var(--font-display);
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: 0.25s;
+            cursor: pointer;
+            touch-action: manipulation;
+            background: rgba(255, 204, 0, 0.07);
+        }
+        #btn-replay-ui:hover,
+        #btn-replay-ui:active {
+            background: var(--gold-bright);
+            color: #16110a;
+            transform: scale(1.05);
+            box-shadow: 0 10px 34px rgba(255, 204, 0, 0.4);
         }
 
-        /* ===== 响应式 ===== */
+        /* ===== Responsif ===== */
         @media (max-width: 640px) {
             #status-bar {
                 top: 14px;
@@ -923,6 +924,7 @@
                 border-radius: 12px;
             }
             .status-title { font-size: 14px; }
+            .status-title .progress-text { font-size: 12px; }
             .status-timer { width: 58px; height: 58px; font-size: 14px; }
             .status-timer::before {
                 inset: -6px;
@@ -950,14 +952,7 @@
             .lb-pagination button,
             .records-pagination button { padding: 4px 12px; font-size: 12px; }
             #mic-status { font-size: 16px; }
-            #btn-yellow {
-                bottom: 80px;
-                left: 14px;
-                padding: 10px 16px;
-                font-size: 13px;
-                border-radius: 40px;
-            }
-            #btn-yellow::before { font-size: 16px; }
+            #btn-yellow { display: none !important; }
             #info-panel.layout-6 {
                 left: 50%;
                 width: 88%;
@@ -977,22 +972,20 @@
         @media (max-width: 420px) {
             .status-row { flex-wrap: wrap; gap: 6px; }
             .status-actions { margin-left: auto; }
-            #btn-yellow { padding: 8px 12px; font-size: 12px; }
-            #btn-yellow::before { font-size: 14px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 闪光 -->
-    <div id="flash-effect"></div>
+    <!-- ===== Kesan Kilat ===== -->
+    <div id="flash-effect" style="position:fixed;top:0;left:0;width:100%;height:100%;background:white;opacity:0;pointer-events:none;z-index:2000;"></div>
 
-    <!-- 开始面板 (两步) -->
+    <!-- ===== Panel Mula ===== -->
     <div id="start-panel">
         <div class="start-card" id="step1-card">
             <span class="icon">🏛️</span>
             <h1>Jalur Gemilang</h1>
-            <div class="sub">Uji Minda</div>
+            <div class="sub">Cabaran 2 Minit</div>
             <div class="step-indicator">
                 <span class="step-dot active"></span>
                 <span class="step-dot"></span>
@@ -1018,20 +1011,20 @@
                 </div>
                 <div>1. Guna isyarat tangan atau klik pada bahagian Jalur Gemilang.</div>
                 <div>2. Sebut <strong>perkataan kunci</strong> bagi bahagian yang dipilih.</div>
-                <div>3. Selesaikan <strong>semua 6 bahagian</strong> dalam <strong>3 minit</strong> untuk menang!</div>
+                <div>3. Selesaikan <strong>semua 6 bahagian</strong> dalam <strong>2 minit</strong> untuk menang!</div>
                 <div style="margin-top:8px; color:var(--gold-bright); font-weight:500;">🔊 Cuba sebut perkataan dengan jelas</div>
             </div>
-            <button class="btn-start" id="btn-step2">🚀 MULA!</button>
-            <div class="footnote">*Masa akan mula selepas klik</div>
+            <button class="btn-start" id="btn-step2" disabled>⏳ Kamera sedang bersedia...</button>
+            <div class="footnote">*Kamera akan diaktifkan secara automatik. Jika tidak, klik tetap boleh digunakan.</div>
         </div>
     </div>
 
-    <!-- 排行榜模态框 -->
+    <!-- ===== Papan Pendahulu (Leaderboard) ===== -->
     <div id="leaderboard-panel">
         <div class="leaderboard-card">
-            <h2>🏆 Papan Markah</h2>
+            <h2>🏆 Papan Pendahulu</h2>
             <div class="lb-list" id="leaderboard-list"></div>
-            <div class="lb-pagination" id="lb-pagination">
+            <div class="lb-pagination">
                 <button id="lb-prev" disabled>Sebelum</button>
                 <span id="lb-page-info">1 / 1</span>
                 <button id="lb-next" disabled>Seterusnya</button>
@@ -1040,7 +1033,7 @@
         </div>
     </div>
 
-    <!-- 完整记录面板 -->
+    <!-- ===== Panel Rekod (Tersembunyi) ===== -->
     <div id="records-panel">
         <div class="records-card">
             <h2>📊 Rekod Penuh</h2>
@@ -1049,10 +1042,10 @@
                 <button data-tab="completed">Selesai</button>
                 <button data-tab="timeout">Masa Tamat</button>
             </div>
-            <div class="records-list-container" id="records-list-container">
+            <div class="records-list-container">
                 <div id="records-list"></div>
             </div>
-            <div class="records-pagination" id="records-pagination">
+            <div class="records-pagination">
                 <button id="records-prev" disabled>Sebelum</button>
                 <span id="records-page-info">1 / 1</span>
                 <button id="records-next" disabled>Seterusnya</button>
@@ -1064,20 +1057,23 @@
         </div>
     </div>
 
-    <!-- 胜利画面 -->
+    <!-- ===== Skrin Kemenangan ===== -->
     <div id="victory-screen">
         <div class="trophy">🏆</div>
         <h1>SYABAS!</h1>
-        <p class="sub" id="victory-sub">Anda berjaya!</p>
+        <p class="sub" id="victory-sub">Anda telah memahami maksud Jalur Gemilang!</p>
         <div class="victory-score" id="victory-score"></div>
         <button id="btn-replay-ui">MAIN SEMULA</button>
     </div>
 
-    <!-- 状态栏 -->
+    <!-- ===== Bar Status ===== -->
     <div id="status-bar">
         <div class="status-row">
-            <span class="status-title dbl-click-hint" id="status-title-double">⚜️ Jalur Gemilang</span>
-            <span class="status-timer idle" id="timer-display">03:00</span>
+            <span class="status-title dbl-click-hint" id="status-title-double">
+                ⚜️ Jalur Gemilang
+                <span class="progress-text" id="progress-indicator">Selesai: 0/6</span>
+            </span>
+            <span class="status-timer idle" id="timer-display">02:00</span>
         </div>
         <div class="status-row">
             <span class="status-hint">
@@ -1087,27 +1083,27 @@
                 <span style="margin-left:10px; color:var(--gold-dim);">🖱️ Klik</span>
             </span>
             <div class="status-actions">
-                <button id="btn-leaderboard" aria-label="Papan markah" title="Papan Markah">🏆</button>
-                <span id="mic-status">🎤</span>
+                <button id="btn-leaderboard" aria-label="Papan pendahulu" title="Papan Pendahulu">🏆</button>
+                <span id="mic-status" class="inactive">🎤</span>
             </div>
         </div>
         <div id="camera-error">⚠️ Kamera tidak dapat diakses — klik masih boleh digunakan</div>
     </div>
 
-    <!-- 黄色专用按钮 (左下方) -->
+    <!-- ===== Butang Kuning (kiri bawah) ===== -->
     <button id="btn-yellow">Kuning</button>
 
-    <!-- 信息面板 -->
+    <!-- ===== Panel Maklumat ===== -->
     <div id="info-panel">
         <button id="close-panel" aria-label="Tutup panel">✕</button>
         <h2 id="info-title">Tajuk</h2>
         <div id="info-desc" class="desc-container"></div>
     </div>
 
-    <!-- Three.js 容器 -->
+    <!-- ===== Bekas Three.js ===== -->
     <div id="container"></div>
 
-    <!-- 外部库 -->
+    <!-- ===== Pustaka Luaran ===== -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js">
@@ -1122,63 +1118,87 @@
             'use strict';
 
             // ================================================================
-            // 1. 配置
+            // 1. Konfigurasi
             // ================================================================
             const CONFIG = {
                 PARTICLE_STEP: 1.2,
                 CAMERA_FPS: 15,
-                PINCH_THRESHOLD: 0.06,
-                HOVER_THRESHOLD: 0.15,
                 FIST_THRESHOLD: 0.20,
-                OPEN_THRESHOLD: 0.35,
-                GAME_DURATION: 180,
+                GAME_DURATION: 120, // 2 minit
+                CLICK_PARTICLE_RADIUS: 60,
+                REC_GUARD_INTERVAL: 800,
+                KEEPALIVE_INTERVAL: 2000,
+                MAX_RECORDS: 100,
                 LB_PAGE_SIZE: 15,
-                RECORDS_PAGE_SIZE: 15,
-                CLICK_PARTICLE_RADIUS: 60
+                RECORDS_PAGE_SIZE: 15
             };
 
             // ================================================================
-            // 2. 游戏数据
+            // 2. Data Permainan (Bahasa Melayu) - Kata kunci sudah dihuruf besar
             // ================================================================
             const DATA = {
-                1: { name: "🟡 Kuning", kws: ["kesetiaan kepada raja dan negara"], status: [false], points: [
-                        "Melambangkan {0}."
-                    ], uiHex: "#ffcc00" },
-                2: { name: "🔵 Biru Tua", kws: ["perpaduan"], status: [false], points: [
-                        "Melambangkan {0} rakyat yang berbilang kaum."
-                    ], uiHex: "#3399ff" },
-                3: { name: "🔴 Merah", kws: ["keberanian", "kegigihan"], status: [false, false], points: [
-                        "Melambangkan {0} dan {1} rakyat menghadapi cabaran."
-                    ], uiHex: "#ff3333" },
-                4: { name: "⚪ Putih", kws: ["kesucian", "keikhlasan"], status: [false, false], points: [
-                        "Melambangkan {0} dan {1}."
-                    ], uiHex: "#ffffff" },
-                5: { name: "🌙 Bulan Sabit", kws: ["agama islam"], status: [false], points: [
-                        "Melambangkan {0} sebagai agama Persekutuan."
-                    ], uiHex: "#ffcc00" },
-                6: { name: "⭐ Bintang & 14 Jalur", kws: ["13 buah negeri", "kerajaan persekutuan"], status: [false,
-                        false
-                    ], points: ["Melambangkan perpaduan {0} dan {1}."], uiHex: "#ffcc00" }
+                1: { 
+                    name: "🟡 Kuning", 
+                    kws: ["kesetiaan kepada raja dan negara"], 
+                    displayKws: ["Kesetiaan Kepada Raja Dan Negara"],
+                    status: [false], 
+                    points: ["Melambangkan {0}."], 
+                    uiHex: "#ffcc00" 
+                },
+                2: { 
+                    name: "🔵 Biru Tua", 
+                    kws: ["perpaduan"], 
+                    displayKws: ["Perpaduan"],
+                    status: [false], 
+                    points: ["Melambangkan {0} rakyat yang berbilang kaum."], 
+                    uiHex: "#3399ff" 
+                },
+                3: { 
+                    name: "🔴 Merah", 
+                    kws: ["keberanian", "kegigihan"], 
+                    displayKws: ["Keberanian", "Kegigihan"],
+                    status: [false, false], 
+                    points: ["Melambangkan {0} dan {1} rakyat menghadapi cabaran."], 
+                    uiHex: "#ff3333" 
+                },
+                4: { 
+                    name: "⚪ Putih", 
+                    kws: ["kesucian", "keikhlasan"], 
+                    displayKws: ["Kesucian", "Keikhlasan"],
+                    status: [false, false], 
+                    points: ["Melambangkan {0} dan {1}."], 
+                    uiHex: "#ffffff" 
+                },
+                5: { 
+                    name: "🌙 Bulan Sabit", 
+                    kws: ["agama islam"], 
+                    displayKws: ["Agama Islam"],
+                    status: [false], 
+                    points: ["Melambangkan {0} sebagai agama Persekutuan."], 
+                    uiHex: "#ffcc00" 
+                },
+                6: { 
+                    name: "⭐ Bintang Pecah 14 & 14 Jalur", 
+                    kws: ["13 buah negeri", "kerajaan persekutuan"], 
+                    displayKws: ["13 Buah Negeri", "Kerajaan Persekutuan"],
+                    status: [false, false], 
+                    points: ["Melambangkan perpaduan {0} dan {1}."], 
+                    uiHex: "#ffcc00" 
+                }
             };
             const TOTAL_ITEMS = Object.keys(DATA).length;
-
-            // 跟踪每个组件是否完全解锁
             const UNLOCKED_STAGES = {};
-            for (let key in DATA) { UNLOCKED_STAGES[key] = false; }
+            for (let key in DATA) UNLOCKED_STAGES[key] = false;
 
             // ================================================================
-            // 3. 音频引擎
+            // 3. Enjin Audio (tidak berubah)
             // ================================================================
             let audioCtx = null;
             const APPLAUSE_URL = "https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3";
 
             function initAudio() {
-                if (!audioCtx) {
-                    audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
+                if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
                 return audioCtx;
             }
 
@@ -1238,7 +1258,7 @@
             }
 
             // ================================================================
-            // 4. 记录管理
+            // 4. Pengurusan Rekod
             // ================================================================
             const RECORDS_KEY = 'jalur_records';
 
@@ -1252,6 +1272,7 @@
             function saveRecord(record) {
                 const records = getRecords();
                 records.push(record);
+                if (records.length > CONFIG.MAX_RECORDS) records = records.slice(-CONFIG.MAX_RECORDS);
                 try {
                     localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
                 } catch (e) {}
@@ -1265,89 +1286,36 @@
             }
 
             // ================================================================
-            // 5. 语音匹配 (严格单词级)
+            // ★★★ 5. Padanan Pertuturan YANG DIPERKETATKAN ★★★
             // ================================================================
-            function levenshtein(a, b) {
-                const matrix = Array.from({ length: a.length + 1 }, (_, i) => i);
-                for (let j = 1; j <= b.length; j++) {
-                    let prev = matrix[0];
-                    matrix[0] = j;
-                    for (let i = 1; i <= a.length; i++) {
-                        const temp = matrix[i];
-                        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-                        matrix[i] = Math.min(
-                            matrix[i - 1] + 1,
-                            matrix[0] + 1,
-                            prev + cost
-                        );
-                        prev = temp;
-                    }
-                }
-                return matrix[a.length];
-            }
-
-            function getThreshold(wordLen) {
-                if (wordLen <= 3) return 0;
-                if (wordLen <= 5) return 1;
-                if (wordLen <= 8) return 2;
-                return 3;
-            }
-
-            const VARIANT_MAP = {
-                "kesetiaan kepada raja dan negara": ["kesetiaan kepada raja dan negara"],
-                "perpaduan": ["perpaduan"],
-                "keberanian": ["keberanian"],
-                "kegigihan": ["kegigihan"],
-                "kesucian": ["kesucian"],
-                "keikhlasan": ["keikhlasan"],
-                "agama islam": ["agama islam"],
-                "13 buah negeri": ["13 buah negeri", "tiga belas buah negeri"],
-                "kerajaan persekutuan": ["kerajaan persekutuan"]
-            };
-
+            // Hanya dua kaedah padanan:
+            // 1. Frasa tepat (selepas membuang tanda baca dan jarak, semua perkataan mesti sama)
+            // 2. Suburutan tertib (semua perkataan dalam keyword mesti hadir dalam speech mengikut urutan, dan setiap perkataan mesti sama)
+            // Tiada lagi padanan edit distance yang longgar.
             function isKeywordMatch(kw, speech) {
+                // Bersihkan: buang aksara bukan huruf/angka, kekalkan ruang, kecilkan huruf
                 const clean = s => s.replace(/[^a-z0-9\s]/g, '').toLowerCase().trim();
                 const cleanKw = clean(kw);
                 const cleanSpeech = clean(speech);
-
-                const variants = VARIANT_MAP[kw] || [kw];
-                for (let v of variants) {
-                    const cleanV = clean(v);
-                    const noSpaceV = cleanV.replace(/\s/g, '');
-                    const noSpaceSpeech = cleanSpeech.replace(/\s/g, '');
-                    if (noSpaceSpeech.includes(noSpaceV)) return true;
-                }
-
-                const kwWords = cleanKw.split(/\s+/);
-                const speechWords = cleanSpeech.split(/\s+/);
+                
+                // 1. Padanan tepat keseluruhan frasa (setelah dibersihkan)
+                if (cleanKw === cleanSpeech) return true;
+                
+                // 2. Padanan suburutan tertib (setiap perkataan mesti sama, dan mengikut urutan)
+                const kwWords = cleanKw.split(/\s+/).filter(w => w.length > 0);
+                const spWords = cleanSpeech.split(/\s+/).filter(w => w.length > 0);
                 if (kwWords.length === 0) return false;
-                if (speechWords.length < kwWords.length) return false;
-
-                const used = new Array(speechWords.length).fill(false);
-                let allMatched = true;
-                for (let kwWord of kwWords) {
-                    let found = false;
-                    for (let i = 0; i < speechWords.length; i++) {
-                        if (used[i]) continue;
-                        const sw = speechWords[i];
-                        const dist = levenshtein(kwWord, sw);
-                        const threshold = getThreshold(kwWord.length);
-                        if (dist <= threshold) {
-                            used[i] = true;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        allMatched = false;
-                        break;
+                let idx = 0;
+                for (let word of spWords) {
+                    if (idx < kwWords.length && word === kwWords[idx]) {
+                        idx++;
                     }
                 }
-                return allMatched;
+                return idx === kwWords.length;
             }
 
             // ================================================================
-            // 6. 游戏状态
+            // 6. Keadaan Permainan
             // ================================================================
             let gameActive = false;
             let timerInterval = null;
@@ -1358,19 +1326,18 @@
             let isVictory = false;
             let isCamStarted = false;
             let recGuardInterval = null;
+            let keepAliveInterval = null;
             let victoryPlayed = false;
             let allFinishedFlag = false;
-            let cameraErrorShown = false;
+            let clickLock = false;
 
             let scene, camera, renderer, particles, particleMeta = [];
             let currentMode = 0;
-            let previousMode = 0;
             const FLAG_URL =
                 "https://2.bp.blogspot.com/-eebZvbZ1IVc/VAaQ9l_EpMI/AAAAAAAAKD8/rcoJeurNglc/s1600/Bendera%2BMalaysia%2B-%2BJalur%2BGemilang.png";
 
             let rec = null;
             let recStarted = false;
-
             let clickCooldown = false;
             let morphFactor = 0;
             let selectFactor = 0;
@@ -1380,11 +1347,12 @@
             let recordsCurrentTab = 'all';
 
             // ================================================================
-            // 7. 语音识别
+            // 7. Pengecaman Pertuturan (dengan kestabilan)
             // ================================================================
             function initSpeechRecognition() {
                 if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-                    console.warn('Speech not supported');
+                    console.warn('Pertuturan tidak disokong');
+                    updateMicStatus(false);
                     return null;
                 }
                 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1398,147 +1366,172 @@
                     const lastIndex = e.results.length - 1;
                     let speech = e.results[lastIndex][0].transcript.toLowerCase().trim();
                     speech = speech.replace(/[，。、！？\s]+/g, ' ').trim();
+
+                    // Semua bahagian menggunakan padanan umum yang ketat (tiada rawatan khas)
                     const data = DATA[currentMode];
                     if (!data) return;
-
                     let matchedSomething = false;
-                    let newlyUnlocked = false;
-
                     data.kws.forEach((kw, idx) => {
                         if (data.status[idx]) return;
                         if (isKeywordMatch(kw, speech)) {
                             matchedSomething = true;
                             if (!data.status[idx]) {
                                 data.status[idx] = true;
-                                newlyUnlocked = true;
                                 playDing();
-                                saveProgress();
                                 UNLOCKED_STAGES[currentMode] = data.status.every(s => s === true);
                                 updateUI();
+                                forceUpdateParticles();
+                                updateProgressDisplay();
+                                console.log(`✅ ${data.name} telah dibuka (${kw})`);
                                 checkAllUnlockedAndFinish();
                             }
                         }
                     });
-
-                    if (!matchedSomething) {
-                        playErrorSound();
-                    }
+                    if (!matchedSomething) playErrorSound();
                 };
 
                 r.onerror = (err) => {
-                    console.warn('Speech error:', err);
-                    if (!recStarted && gameActive) {
+                    console.warn('Ralat pertuturan:', err);
+                    if (err.error !== 'not-allowed' && gameActive && !isGameFinished) {
+                        recStarted = false;
+                        updateMicStatus(false);
                         tryStartRecognition();
+                    } else {
+                        updateMicStatus(false);
                     }
                 };
-
                 r.onend = () => {
                     if (gameActive && !isGameFinished && rec) {
+                        recStarted = false;
+                        updateMicStatus(false);
                         tryStartRecognition();
+                    } else {
+                        updateMicStatus(false);
                     }
                 };
-
                 return r;
             }
 
             function tryStartRecognition() {
-                if (!rec || recStarted) return;
+                if (!rec || recStarted || !gameActive || isGameFinished) return;
                 try {
+                    initAudio();
                     rec.start();
                     recStarted = true;
-                    document.getElementById('mic-status').style.display = 'inline-block';
+                    updateMicStatus(true);
                 } catch (e) {
-                    console.warn('语音识别启动失败:', e);
+                    recStarted = false;
+                    updateMicStatus(false);
                     setTimeout(() => {
-                        if (!recStarted && rec) {
-                            try {
-                                rec.start();
-                                recStarted = true;
-                            } catch (e2) {}
-                        }
-                    }, 500);
+                        if (!recStarted && rec && gameActive && !isGameFinished) tryStartRecognition();
+                    }, 300);
                 }
             }
 
             function startRecognition() {
-                if (!rec) return;
-                if (recStarted) return;
-                tryStartRecognition();
+                if (rec && !recStarted) tryStartRecognition();
+                else updateMicStatus(false);
             }
 
             function stopRecognition() {
                 if (rec) {
                     try { rec.stop(); } catch (e) {}
                     recStarted = false;
+                    updateMicStatus(false);
                 }
-                document.getElementById('mic-status').style.display = 'inline-block';
             }
 
             function startGuardian() {
                 if (recGuardInterval) clearInterval(recGuardInterval);
                 recGuardInterval = setInterval(() => {
-                    if (gameActive && !isGameFinished && rec && !recStarted) {
-                        tryStartRecognition();
-                    }
-                }, 3000);
+                    if (gameActive && !isGameFinished && rec && !recStarted) tryStartRecognition();
+                }, CONFIG.REC_GUARD_INTERVAL);
+                if (keepAliveInterval) clearInterval(keepAliveInterval);
+                keepAliveInterval = setInterval(() => {
+                    if (gameActive && !isGameFinished && rec && !recStarted) tryStartRecognition();
+                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+                    if (recStarted) updateMicStatus(true);
+                }, CONFIG.KEEPALIVE_INTERVAL);
             }
 
             function stopGuardian() {
-                if (recGuardInterval) {
-                    clearInterval(recGuardInterval);
-                    recGuardInterval = null;
-                }
+                if (recGuardInterval) { clearInterval(recGuardInterval);
+                    recGuardInterval = null; }
+                if (keepAliveInterval) { clearInterval(keepAliveInterval);
+                    keepAliveInterval = null; }
+            }
+
+            function updateMicStatus(active) {
+                const el = document.getElementById('mic-status');
+                if (active) { el.className = 'active';
+                    el.textContent = '🎤'; } else { el.className = 'inactive';
+                    el.textContent = '🎤'; }
             }
 
             // ================================================================
-            // 8. 进度管理
+            // 8. Pengurusan Kemajuan
             // ================================================================
-            function saveProgress() {
-                try {
-                    const data = {};
-                    for (let key in DATA) {
-                        data[key] = DATA[key].status;
-                    }
-                    localStorage.setItem('jalur_progress', JSON.stringify(data));
-                } catch (e) {}
-            }
-
-            function loadProgress() {
-                try {
-                    const saved = localStorage.getItem('jalur_progress');
-                    if (saved) {
-                        const parsed = JSON.parse(saved);
-                        for (let key in parsed) {
-                            if (DATA[key] && Array.isArray(parsed[key])) {
-                                DATA[key].status = parsed[key].map(v => !!v);
-                                UNLOCKED_STAGES[key] = DATA[key].status.every(s => s === true);
-                            }
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            function resetProgress() {
+            function updateProgressDisplay() {
+                let count = 0;
                 for (let key in DATA) {
-                    DATA[key].status = DATA[key].status.map(() => false);
-                    UNLOCKED_STAGES[key] = false;
+                    if (DATA[key].status.every(s => s === true)) count++;
                 }
-                saveProgress();
-                victoryPlayed = false;
-                allFinishedFlag = false;
+                const el = document.getElementById('progress-indicator');
+                if (el) el.textContent = `Selesai: ${count}/${TOTAL_ITEMS}`;
+                return count;
             }
 
+            // ================================================================
+            // 9. Kemenangan
+            // ================================================================
             function checkAllUnlockedAndFinish() {
-                const allDone = Object.keys(DATA).every(key => DATA[key].status.every(s => s === true));
+                let allDone = true;
+                for (let key in DATA) {
+                    if (!DATA[key].status.every(s => s === true)) {
+                        allDone = false;
+                        break;
+                    }
+                }
                 if (allDone) {
                     allFinishedFlag = true;
-                    triggerVictory();
+                    if (!victoryPlayed) {
+                        console.log('🎉 Semua bahagian selesai, mencetuskan kemenangan!');
+                        triggerVictory();
+                    }
                 }
                 return allDone;
             }
 
+            function triggerVictory() {
+                if (victoryPlayed) return;
+                victoryPlayed = true;
+                isVictory = true;
+                if (timerInterval) { clearInterval(timerInterval);
+                    timerInterval = null; }
+                gameActive = false;
+                playVictorySound();
+                document.getElementById('victory-screen').classList.add('active');
+                document.getElementById('victory-sub').textContent = 'Tahniah! Anda telah memahami maksud Jalur Gemilang!';
+                if (!isGameFinished) {
+                    const elapsed = CONFIG.GAME_DURATION - timeLeft;
+                    const record = {
+                        name: playerName,
+                        school: playerSchool,
+                        status: 'completed',
+                        score: elapsed,
+                        timestamp: Date.now()
+                    };
+                    saveRecord(record);
+                    document.getElementById('victory-score').textContent = `⏱️ ${elapsed} saat`;
+                }
+                stopRecognition();
+                stopGuardian();
+                clickLock = false;
+                console.log('🎉 Skrin kemenangan dipaparkan!');
+            }
+
             // ================================================================
-            // 9. Three.js 初始化
+            // 10. Three.js Init (tidak berubah)
             // ================================================================
             function initScene() {
                 scene = new THREE.Scene();
@@ -1565,7 +1558,6 @@
                         const pos = [],
                             col = [];
                         const step = CONFIG.PARTICLE_STEP;
-
                         for (let y = 0; y < 256; y += step) {
                             for (let x = 0; x < 512; x += step) {
                                 const i = (Math.floor(y) * 512 + Math.floor(x)) * 4;
@@ -1573,31 +1565,24 @@
                                     const vx = (x - 256) * 1.8;
                                     const vy = -(y - 128) * 1.8;
                                     pos.push(vx, vy, 0);
-                                    const r = imgData[i] / 255;
-                                    const g = imgData[i + 1] / 255;
-                                    const b = imgData[i + 2] / 255;
+                                    const r = imgData[i] / 255,
+                                        g = imgData[i + 1] / 255,
+                                        b = imgData[i + 2] / 255;
                                     col.push(0.1, 0.1, 0.1);
-
-                                    let gid = 0;
-                                    let unlockId = 0;
+                                    let gid = 0,
+                                        unlockId = 0;
                                     if (r > 0.6 && g > 0.5 && b < 0.4) { gid = 1;
                                         unlockId = 1; } else if (b > 0.3 && b > r) { gid = 2;
                                         unlockId = 2; } else if (r > 0.6 && g < 0.4 && b < 0.4) { gid = 3;
                                         unlockId = 3; } else if (r > 0.8 && g > 0.8 && b > 0.8) { gid = 4;
                                         unlockId = 4; }
-
                                     if (gid === 1) {
                                         const dx = x - 166,
                                             dy = y - 64;
-                                        if (dx * dx + dy * dy < 2800) {
-                                            gid = 7;
-                                            unlockId = 6;
-                                        } else {
-                                            gid = 5;
-                                            unlockId = 5;
-                                        }
+                                        if (dx * dx + dy * dy < 2800) { gid = 7;
+                                            unlockId = 6; } else { gid = 5;
+                                            unlockId = 5; }
                                     }
-
                                     particleMeta.push({
                                         ox: vx,
                                         oy: vy,
@@ -1612,7 +1597,6 @@
                                 }
                             }
                         }
-
                         const geo = new THREE.BufferGeometry();
                         geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
                         geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
@@ -1625,15 +1609,32 @@
                         scene.add(particles);
                         resolve();
                     };
-                    img.onerror = () => {
-                        console.warn('Flag load failed');
-                        resolve();
-                    };
+                    img.onerror = () => resolve();
                 });
             }
 
+            function forceUpdateParticles() {
+                if (!particles) return;
+                const colAttr = particles.geometry.attributes.color;
+                for (let i = 0; i < particleMeta.length; i++) {
+                    const m = particleMeta[i];
+                    const isLit = UNLOCKED_STAGES[m.unlockId] || false;
+                    let r, g, b;
+                    if (isLit) {
+                        r = m.r;
+                        g = m.g;
+                        b = m.b;
+                    } else {
+                        const gray = (m.r + m.g + m.b) / 3 * 0.25;
+                        r = g = b = gray;
+                    }
+                    colAttr.setXYZ(i, r, g, b);
+                }
+                colAttr.needsUpdate = true;
+            }
+
             // ================================================================
-            // 10. 手势识别 (修复：点击后仅握拳才退出)
+            // 11. Pengecaman Isyarat Tangan + Kunci Klik (tidak berubah)
             // ================================================================
             function startGestureOnly() {
                 if (isCamStarted) return;
@@ -1653,6 +1654,7 @@
 
                 hands.onResults((res) => {
                     try {
+                        if (clickLock) return;
                         let newMode = 0;
                         let isFist = false;
                         if (res.multiHandLandmarks && res.multiHandLandmarks.length > 0) {
@@ -1665,8 +1667,6 @@
                             ];
                             const thumb = Math.hypot(marks[4].x - marks[17].x, marks[4].y - marks[17].y) > 0.1;
                             const count = f.filter(v => v).length;
-
-                            // 计算平均张开度
                             const wrist = marks[0];
                             let openDist = 0;
                             [8, 12, 16, 20].forEach(idx => {
@@ -1674,52 +1674,47 @@
                             });
                             const avgOpen = openDist / 4;
                             isFist = (avgOpen < CONFIG.FIST_THRESHOLD);
-
                             if (thumb && count === 4) newMode = 5;
                             else if (thumb && f[3] && !f[0]) newMode = 6;
                             else newMode = count;
                         }
-
-                        // 关键修复：如果当前模式已选中（非空闲），且新模式为0（空闲/握拳）
-                        // 仅当检测到明确的握拳（isFist）时才切换，否则忽略
                         if (currentMode !== 0 && newMode === 0) {
-                            if (!isFist) {
-                                // 不是握拳，忽略此次切换
-                                return;
-                            }
+                            if (!isFist) return;
                         }
-
                         if (currentMode !== newMode) {
-                            setModeImmediate(newMode);
+                            currentMode = newMode;
+                            if (newMode > 0 && rec && !recStarted) tryStartRecognition();
+                            updateUI();
+                            forceUpdateParticles();
                         }
-                    } catch (err) { console.warn('Gesture error:', err); }
+                    } catch (err) { console.warn('Ralat isyarat:', err); }
                 });
 
                 const video = document.createElement('video');
                 const cameraUtils = new Camera(video, {
-                    onFrame: async () => {
-                        try {
-                            await hands.send({ image: video });
-                        } catch (e) {}
-                    },
+                    onFrame: async () => { try { await hands.send({ image: video }); } catch (e) {} },
                     width: 640,
                     height: 480,
                     fps: CONFIG.CAMERA_FPS
                 });
-
                 cameraUtils.start().then(() => {
                     document.getElementById('camera-error').style.display = 'none';
+                    enableStartButton();
                 }).catch(err => {
-                    console.warn('Camera error:', err);
+                    console.warn('Ralat kamera:', err);
                     document.getElementById('camera-error').style.display = 'block';
-                    cameraErrorShown = true;
+                    enableStartButton();
                 });
+            }
 
-                if (!rec) {}
+            function enableStartButton() {
+                const btn = document.getElementById('btn-step2');
+                btn.disabled = false;
+                btn.textContent = '🚀 MULA!';
             }
 
             // ================================================================
-            // 11. 点击检测 (基于粒子)
+            // 12. Pengendali Klik (tidak berubah)
             // ================================================================
             function setupClickHandler() {
                 const canvas = renderer.domElement;
@@ -1730,6 +1725,7 @@
                     if (event.touches) {
                         clientX = event.touches[0].clientX;
                         clientY = event.touches[0].clientY;
+                        event.preventDefault();
                     } else {
                         clientX = event.clientX;
                         clientY = event.clientY;
@@ -1740,17 +1736,13 @@
                 }
 
                 function handleClick(event) {
-                    if (clickCooldown) return;
+                    if (clickCooldown || !gameActive || isVictory || isGameFinished) return;
                     clickCooldown = true;
                     setTimeout(() => { clickCooldown = false; }, 250);
-
-                    if (!gameActive || isVictory || isGameFinished) return;
-                    if (Object.keys(DATA).every(key => DATA[key].status.every(s => s === true))) return;
 
                     const mouse = getClickPoint(event);
                     const raycaster = new THREE.Raycaster();
                     raycaster.setFromCamera(mouse, camera);
-
                     const planeNormal = new THREE.Vector3(0, 0, 1);
                     const plane = new THREE.Plane(planeNormal, 0);
                     const intersectPoint = new THREE.Vector3();
@@ -1761,103 +1753,38 @@
                     if (t < 0) return;
                     intersectPoint.copy(ray.origin).add(ray.direction.clone().multiplyScalar(t));
 
-                    let hitId = -1;
-                    let minDist = Infinity;
-
+                    let hitId = -1,
+                        minDist = Infinity;
                     for (let i = 0; i < particleMeta.length; i++) {
                         const m = particleMeta[i];
                         if (m.unlockId < 1 || m.unlockId > 6) continue;
-                        const dx = intersectPoint.x - m.ox;
-                        const dy = intersectPoint.y - m.oy;
+                        const dx = intersectPoint.x - m.ox,
+                            dy = intersectPoint.y - m.oy;
                         const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < minDist) {
-                            minDist = dist;
-                            hitId = m.unlockId;
-                        }
+                        if (dist < minDist) { minDist = dist;
+                            hitId = m.unlockId; }
                     }
-
                     if (hitId !== -1 && minDist < CONFIG.CLICK_PARTICLE_RADIUS) {
                         if (hitId === currentMode) return;
-                        setModeImmediate(hitId);
+                        clickLock = true;
+                        currentMode = hitId;
+                        if (currentMode > 0 && rec && !recStarted) tryStartRecognition();
+                        updateUI();
+                        forceUpdateParticles();
                     } else {
-                        if (currentMode !== 0) {
-                            setModeImmediate(0);
-                        }
+                        clickLock = false;
+                        if (currentMode !== 0) { currentMode = 0;
+                            updateUI();
+                            forceUpdateParticles(); }
                     }
                 }
-
                 canvas.addEventListener('click', handleClick);
                 canvas.addEventListener('touchstart', handleClick, { passive: false });
             }
 
             // ================================================================
-            // 12. 模式切换辅助函数（立即生效）
+            // 13. Kemas Kini UI (paparan menggunakan displayKws untuk huruf besar)
             // ================================================================
-            function setModeImmediate(newMode) {
-                if (currentMode === newMode) return;
-                currentMode = newMode;
-                if (newMode === 0) {
-                    morphFactor = 0;
-                    selectFactor = 0;
-                } else {
-                    morphFactor = 1;
-                    selectFactor = 1;
-                }
-                const yellowBtn = document.getElementById('btn-yellow');
-                if (currentMode === 1) {
-                    yellowBtn.classList.add('active-mode');
-                } else {
-                    yellowBtn.classList.remove('active-mode');
-                }
-                if (currentMode > 0 && rec && !recStarted) {
-                    tryStartRecognition();
-                }
-                updateUI();
-            }
-
-            // ================================================================
-            // 13. 胜利触发
-            // ================================================================
-            function triggerVictory() {
-                if (victoryPlayed) return;
-                victoryPlayed = true;
-                isVictory = true;
-                if (timerInterval) {
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                }
-                gameActive = false;
-                playVictorySound();
-                document.getElementById('victory-screen').classList.add('active');
-                document.getElementById('victory-sub').textContent = 'Anda berjaya memahami Jalur Gemilang!';
-                if (!isGameFinished) {
-                    const elapsed = CONFIG.GAME_DURATION - timeLeft;
-                    const record = {
-                        name: playerName,
-                        school: playerSchool,
-                        status: 'completed',
-                        score: elapsed,
-                        timestamp: Date.now()
-                    };
-                    saveRecord(record);
-                    document.getElementById('victory-score').textContent = `⏱️ ${elapsed} saat`;
-                }
-                stopRecognition();
-                if (recGuardInterval) {
-                    clearInterval(recGuardInterval);
-                    recGuardInterval = null;
-                }
-            }
-
-            // ================================================================
-            // 14. UI 更新
-            // ================================================================
-            function toTitleCase(str) {
-                return str.replace(/\w\S*/g, function(txt) {
-                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                });
-            }
-
             function updateUI() {
                 const panel = document.getElementById('info-panel');
                 const descContainer = document.getElementById('info-desc');
@@ -1872,18 +1799,15 @@
                     titleEl.style.webkitTextFillColor = 'unset';
 
                     descContainer.innerHTML = "";
-
                     config.points.forEach((text, idx) => {
                         let html = text;
                         const kwCount = config.kws.length;
                         for (let i = 0; i < kwCount; i++) {
                             const isFound = config.status[i] || false;
-                            const kw = config.kws[i] || '';
-                            const displayKw = toTitleCase(kw);
+                            const displayKw = isFound ? config.displayKws[i] : "( ? )";
                             const style = isFound ? "kw-found" : "kw-locked";
-                            const label = isFound ? displayKw : "( ? )";
                             html = html.replace(new RegExp(`\\{${i}\\}`, 'g'),
-                                `<span class="${style}">${label}</span>`);
+                                `<span class="${style}">${displayKw}</span>`);
                         }
                         const item = document.createElement('div');
                         item.className = 'point-item';
@@ -1904,19 +1828,21 @@
             }
 
             // ================================================================
-            // 15. 游戏控制
+            // 14. Kawalan Permainan
             // ================================================================
             function startGame() {
-                resetProgress();
+                // Reset state
+                for (let key in DATA) {
+                    DATA[key].status = DATA[key].status.map(() => false);
+                    UNLOCKED_STAGES[key] = false;
+                }
                 currentMode = 0;
-                previousMode = 0;
-                morphFactor = 0;
-                selectFactor = 0;
                 isVictory = false;
                 victoryPlayed = false;
                 allFinishedFlag = false;
                 isGameFinished = false;
                 gameActive = true;
+                clickLock = false;
 
                 document.getElementById('start-panel').classList.add('hidden');
                 document.getElementById('btn-yellow').style.display = 'flex';
@@ -1939,6 +1865,9 @@
                 }, 1000);
 
                 updateUI();
+                forceUpdateParticles();
+                updateProgressDisplay();
+                console.log('⏱️ Permainan bermula, 2 minit');
             }
 
             function updateTimerDisplay() {
@@ -1961,7 +1890,6 @@
                     timerInterval = null; }
                 stopGuardian();
                 const unlockedCount = Object.keys(DATA).filter(key => DATA[key].status.every(s => s === true)).length;
-
                 const record = {
                     name: playerName,
                     school: playerSchool,
@@ -1970,18 +1898,18 @@
                     timestamp: Date.now()
                 };
                 saveRecord(record);
-
                 isVictory = true;
                 document.getElementById('victory-sub').textContent = '⏰ Masa tamat!';
                 document.getElementById('victory-score').textContent =
-                    `📚 Anda berjaya memahami ${unlockedCount}/${TOTAL_ITEMS} bahagian`;
+                    `📚 Anda faham ${unlockedCount}/${TOTAL_ITEMS} bahagian`;
                 document.getElementById('victory-screen').classList.add('active');
-
                 stopRecognition();
+                clickLock = false;
+                console.log(`⏰ Masa tamat, ${unlockedCount}/${TOTAL_ITEMS} bahagian`);
             }
 
             // ================================================================
-            // 16. 排行榜 & 后台渲染
+            // 15. Papan Pendahulu & Rekod (tidak berubah)
             // ================================================================
             function renderLeaderboard() {
                 const container = document.getElementById('leaderboard-list');
@@ -2001,11 +1929,10 @@
                     pageData.forEach((r, idx) => {
                         const rank = start + idx + 1;
                         const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
-                        const timeStr = `${r.score} saat`;
                         html += `<div class="lb-item">
                             <span class="rank">${medal}</span>
                             <span class="name">${escapeHtml(r.name)}</span>
-                            <span class="score">${timeStr}</span>
+                            <span class="score">${r.score} saat</span>
                         </div>`;
                     });
                     container.innerHTML = html;
@@ -2079,7 +2006,7 @@
             }
 
             // ================================================================
-            // 17. Export Excel
+            // 16. Export Excel
             // ================================================================
             function exportExcel() {
                 const records = getRecords();
@@ -2107,22 +2034,24 @@
             }
 
             // ================================================================
-            // 18. 黄色按钮
+            // 17. Butang Kuning
             // ================================================================
             function setupYellowButton() {
-                const btn = document.getElementById('btn-yellow');
-                btn.addEventListener('click', () => {
+                document.getElementById('btn-yellow').addEventListener('click', () => {
                     initAudio();
+                    clickLock = false;
                     if (currentMode === 1) {
-                        setModeImmediate(0);
+                        currentMode = 0;
                     } else {
-                        setModeImmediate(1);
+                        currentMode = 1;
                     }
+                    updateUI();
+                    forceUpdateParticles();
                 });
             }
 
             // ================================================================
-            // 19. 动画循环
+            // 18. Gelung Animasi
             // ================================================================
             function animate() {
                 requestAnimationFrame(animate);
@@ -2168,16 +2097,7 @@
                         }
                     }
 
-                    let isLit = false;
-                    if (currentMode === 0) {
-                        isLit = UNLOCKED_STAGES[m.unlockId] || (UNLOCKED_STAGES[1] && (m.unlockId === 5 || m.unlockId ===
-                            6));
-                    } else if (currentMode === 1) {
-                        isLit = UNLOCKED_STAGES[1];
-                    } else {
-                        isLit = DATA[currentMode] && DATA[currentMode].status.every(s => s);
-                    }
-
+                    const isLit = UNLOCKED_STAGES[m.unlockId] || false;
                     let r, g, b;
                     if (isLit) {
                         r = m.r;
@@ -2200,7 +2120,7 @@
             }
 
             // ================================================================
-            // 20. 窗口自适应 & 全屏
+            // 19. Saiz Tetingkap & Skrin Penuh
             // ================================================================
             window.addEventListener('resize', () => {
                 if (camera) {
@@ -2220,21 +2140,19 @@
             window.toggleFullScreen = toggleFullScreen;
 
             // ================================================================
-            // 21. 启动
+            // 20. Permulaan
             // ================================================================
             async function boot() {
                 initScene();
                 await loadFlag();
                 animate();
 
-                loadProgress();
-
                 setupYellowButton();
-                setupClickHandler();
 
                 const step1Btn = document.getElementById('btn-step1');
                 const nameInput = document.getElementById('player-name');
                 const schoolInput = document.getElementById('player-school');
+                const step2Btn = document.getElementById('btn-step2');
 
                 function handleStep1() {
                     const name = nameInput.value.trim();
@@ -2261,14 +2179,33 @@
                     if (e.key === 'Enter') handleStep1();
                 });
 
-                document.getElementById('btn-step2').addEventListener('click', () => {
-                    startGame();
-                });
+                step2Btn.addEventListener('click', startGame);
 
                 document.getElementById('close-panel').addEventListener('click', () => {
                     document.getElementById('info-panel').classList.remove('active');
                 });
 
+                document.getElementById('btn-replay-ui').addEventListener('click', () => {
+                    playDing();
+                    setTimeout(() => location.reload(), 300);
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'f' || e.key === 'F') toggleFullScreen();
+                });
+
+                // Perlindungan tamat masa: jika kamera tidak selesai dalam 5 saat
+                setTimeout(() => {
+                    if (step2Btn.disabled) {
+                        step2Btn.disabled = false;
+                        step2Btn.textContent = '🚀 MULA! (klik sahaja)';
+                    }
+                }, 5000);
+
+                // Sediakan pengendali klik selepas renderer siap
+                setTimeout(setupClickHandler, 100);
+
+                // ===== Papan Pendahulu =====
                 document.getElementById('btn-leaderboard').addEventListener('click', () => {
                     lbCurrentPage = 1;
                     renderLeaderboard();
@@ -2292,6 +2229,7 @@
                         renderLeaderboard(); }
                 });
 
+                // ===== Panel Rekod (Tersembunyi - klik dua kali pada tajuk) =====
                 document.getElementById('status-title-double').addEventListener('dblclick', () => {
                     recordsCurrentPage = 1;
                     renderRecords(recordsCurrentTab);
@@ -2307,7 +2245,6 @@
                         renderRecords(btn.dataset.tab);
                     });
                 });
-
                 document.getElementById('btn-close-records').addEventListener('click', () => {
                     document.getElementById('records-panel').classList.remove('active');
                 });
@@ -2332,21 +2269,10 @@
                     if (recordsCurrentPage < total) { recordsCurrentPage++;
                         renderRecords(recordsCurrentTab); }
                 });
-
                 document.getElementById('btn-export-excel').addEventListener('click', exportExcel);
-
-                document.getElementById('btn-replay-ui').addEventListener('click', () => {
-                    playDing();
-                    setTimeout(() => location.reload(), 300);
-                });
-
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'f' || e.key === 'F') toggleFullScreen();
-                });
             }
 
             window.onload = boot;
-
         })();
     </script>
 </body>
