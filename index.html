@@ -1079,10 +1079,11 @@
                 } catch (e) {}
             }
 
-            // ---- Upload to Supabase ----
+            // ---- Upload to Supabase (★ 改动：增加超时详情插入) ----
             async function uploadRecordToSupabase(record) {
                 try {
-                    const { error } = await supabase
+                    // 1. 始终插入 scores 表（所有记录）
+                    const { error: errorScores } = await supabase
                         .from('scores')
                         .insert([{
                             player_name: record.name,
@@ -1091,10 +1092,28 @@
                             score: record.score,
                             timestamp: record.timestamp
                         }]);
-                    if (error) {
-                        console.error('Supabase insert error:', error);
+                    if (errorScores) {
+                        console.error('Supabase insert error (scores):', errorScores);
                     } else {
-                        console.log('✅ Record uploaded to Supabase');
+                        console.log('✅ Record uploaded to scores');
+                    }
+
+                    // 2. 如果是超时，额外插入 timeout_details 表
+                    if (record.status === 'timeout' && record.missed_words) {
+                        const { error: errorTimeout } = await supabase
+                            .from('timeout_details')
+                            .insert([{
+                                player_name: record.name,
+                                school: record.school,
+                                unlocked_count: record.score,
+                                missed_words: record.missed_words,
+                                timestamp: record.timestamp
+                            }]);
+                        if (errorTimeout) {
+                            console.error('Supabase insert error (timeout_details):', errorTimeout);
+                        } else {
+                            console.log('✅ Timeout details uploaded to timeout_details');
+                        }
                     }
                 } catch (e) {
                     console.warn('Supabase upload failed:', e);
@@ -1662,7 +1681,7 @@
             }
 
             // ================================================================
-            // 14. Kawalan Permainan (tidak berubah)
+            // 14. Kawalan Permainan (★ 改动：handleGameTimeout 增加 missed_words)
             // ================================================================
             function startGame() {
                 // Reset state
@@ -1723,12 +1742,25 @@
                 if (timerInterval) { clearInterval(timerInterval);
                     timerInterval = null; }
                 stopGuardian();
+                
+                // ★ 改动开始：收集未完成的部分名称
                 const unlockedCount = Object.keys(DATA).filter(key => DATA[key].status.every(s => s === true)).length;
+                const missedParts = [];
+                for (let key in DATA) {
+                    if (!DATA[key].status.every(s => s === true)) {
+                        // 取部分名称（去除表情符号，保留纯文字）
+                        let name = DATA[key].name.replace(/[^\w\s]/g, '').trim();
+                        missedParts.push(name);
+                    }
+                }
+                // ★ 改动结束
+
                 const record = {
                     name: playerName,
                     school: playerSchool,
                     status: 'timeout',
                     score: unlockedCount,
+                    missed_words: missedParts,   // ★ 新增字段
                     timestamp: Date.now()
                 };
                 saveRecord(record);
@@ -1888,7 +1920,7 @@
             window.toggleFullScreen = toggleFullScreen;
 
             // ================================================================
-            // 19. Permulaan (tidak berubah, tetapi event listener untuk leaderboard diubah)
+            // 19. Permulaan (tidak berubah)
             // ================================================================
             async function boot() {
                 initScene();
@@ -1974,7 +2006,6 @@
                     }
                 });
                 document.getElementById('lb-next').addEventListener('click', async () => {
-                    // 先尝试增加页数，由 renderLeaderboard 自动修正越界
                     lbCurrentPage++;
                     await renderLeaderboard();
                 });
