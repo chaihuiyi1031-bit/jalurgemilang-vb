@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jalur Gemilang - Cabaran 2 Minit</title>
+    <title>Jalur Gemilang - Uji Minda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -116,6 +116,9 @@
             -webkit-text-fill-color: var(--gold-bright);
             background: none;
         }
+        .status-title.dbl-click-hint { cursor: pointer; }
+        .status-title.dbl-click-hint::after { content: '⏎'; font-size: 10px; color: #555; margin-left: 4px; opacity: 0.3; }
+
         .status-timer {
             position: relative;
             font-family: var(--font-mono);
@@ -798,7 +801,7 @@
         <div class="start-card" id="step1-card">
             <span class="icon">🏛️</span>
             <h1>Jalur Gemilang</h1>
-            <div class="sub">Cabaran 2 Minit</div>
+            <div class="sub">Uji Minda</div>
             <div class="step-indicator">
                 <span class="step-dot active"></span>
                 <span class="step-dot"></span>
@@ -858,7 +861,7 @@
     <!-- ===== Bar Status ===== -->
     <div id="status-bar">
         <div class="status-row">
-            <span class="status-title" id="status-title">
+            <span class="status-title dbl-click-hint" id="status-title-double">
                 ⚜️ Jalur Gemilang
                 <span class="progress-text" id="progress-indicator">Selesai: 0/6</span>
             </span>
@@ -899,10 +902,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js">
     </script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js">
-    </script>
-
-    <!-- ===== Supabase Client ===== -->
+    <!-- ===== Supabase SDK ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
 
@@ -911,12 +911,11 @@
             'use strict';
 
             // ================================================================
-            // 0. Supabase Configuration (using your new keys)
+            // 0. Supabase Initialization
             // ================================================================
             const SUPABASE_URL = 'https://odnluezykfkbumlfcsjd.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kbmx1ZXp5a2ZrYnVtbGZjc2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjA1NzcsImV4cCI6MjEwMDc5NjU3N30.2qyIATzruUvg6ZE6KCyYwPepYWlx1j9t5yMv-Iv9IvY';
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('✅ Supabase connected');
 
             // ================================================================
             // 1. Konfigurasi
@@ -929,12 +928,11 @@
                 CLICK_PARTICLE_RADIUS: 60,
                 REC_GUARD_INTERVAL: 800,
                 KEEPALIVE_INTERVAL: 2000,
-                MAX_RECORDS: 100,
                 LB_PAGE_SIZE: 15
             };
 
             // ================================================================
-            // 2. Data Permainan (Bahasa Melayu) - Kata kunci sudah dihuruf besar
+            // 2. Data Permainan
             // ================================================================
             const DATA = {
                 1: { 
@@ -991,7 +989,7 @@
             for (let key in DATA) UNLOCKED_STAGES[key] = false;
 
             // ================================================================
-            // 3. Enjin Audio (tidak berubah)
+            // 3. Enjin Audio
             // ================================================================
             let audioCtx = null;
             const APPLAUSE_URL = "https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3";
@@ -1058,100 +1056,46 @@
             }
 
             // ================================================================
-            // 4. Pengurusan Rekod (localStorage backup + Supabase sync)
+            // 4. Pengurusan Rekod (Supabase)
             // ================================================================
-            const RECORDS_KEY = 'jalur_records';
-
-            // ---- Local backup ----
-            function getLocalRecords() {
-                try {
-                    const data = localStorage.getItem(RECORDS_KEY);
-                    return data ? JSON.parse(data) : [];
-                } catch { return []; }
+            // Simpan rekod untuk pemain yang selesai dalam masa
+            async function saveCompletedRecord(name, school, timeSeconds) {
+                const { error } = await supabase
+                    .from('completed_players')
+                    .insert([{ name, school, time_seconds: timeSeconds }]);
+                if (error) console.error('❌ Gagal simpan rekod selesai:', error);
+                else console.log('✅ Rekod selesai disimpan ke Supabase');
             }
 
-            function saveLocalRecord(record) {
-                const records = getLocalRecords();
-                records.push(record);
-                if (records.length > CONFIG.MAX_RECORDS) records = records.slice(-CONFIG.MAX_RECORDS);
-                try {
-                    localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
-                } catch (e) {}
+            // Simpan rekod untuk pemain yang tamat masa
+            async function saveTimeoutRecord(name, school, missedItems) {
+                const { error } = await supabase
+                    .from('timeout_players')
+                    .insert([{ name, school, missed_items: missedItems }]);
+                if (error) console.error('❌ Gagal simpan rekod tamat masa:', error);
+                else console.log('✅ Rekod tamat masa disimpan ke Supabase');
             }
 
-            // ---- ★ 改动：分开存储完成者和超时者 ----
-            async function uploadRecordToSupabase(record) {
-                try {
-                    if (record.status === 'completed') {
-                        // 完成者 → 存入 scores 表（用于排行榜）
-                        const { error } = await supabase
-                            .from('scores')
-                            .insert([{
-                                player_name: record.name,
-                                school: record.school,
-                                status: record.status,
-                                score: record.score,
-                                timestamp: record.timestamp
-                            }]);
-                        if (error) {
-                            console.error('Supabase insert error (scores):', error);
-                        } else {
-                            console.log('✅ Completed record uploaded to scores');
-                        }
-                    } else if (record.status === 'timeout') {
-                        // 超时者 → 存入 timeout_details 表（记录未完成部分）
-                        const { error } = await supabase
-                            .from('timeout_details')
-                            .insert([{
-                                player_name: record.name,
-                                school: record.school,
-                                unlocked_count: record.score,
-                                missed_words: record.missed_words || [],
-                                timestamp: record.timestamp
-                            }]);
-                        if (error) {
-                            console.error('Supabase insert error (timeout_details):', error);
-                        } else {
-                            console.log('✅ Timeout details uploaded to timeout_details');
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Supabase upload failed:', e);
+            // Dapatkan data untuk papan pendahulu (hanya yang selesai)
+            async function getLeaderboardData() {
+                const { data, error } = await supabase
+                    .from('completed_players')
+                    .select('name, school, time_seconds')
+                    .order('time_seconds', { ascending: true })
+                    .limit(100);
+                if (error) {
+                    console.error('❌ Gagal baca papan pendahulu:', error);
+                    return [];
                 }
-            }
-
-            // ---- Main save function ----
-            function saveRecord(record) {
-                // Always save locally
-                saveLocalRecord(record);
-                // Upload to cloud (non-blocking)
-                uploadRecordToSupabase(record);
-            }
-
-            // ---- Fetch leaderboard from Supabase ----
-            async function fetchLeaderboardData(page, pageSize) {
-                const from = (page - 1) * pageSize;
-                const to = from + pageSize - 1;
-                try {
-                    const { data, error, count } = await supabase
-                        .from('scores')
-                        .select('player_name, score', { count: 'exact' })
-                        .eq('status', 'completed')
-                        .order('score', { ascending: true })
-                        .range(from, to);
-                    if (error) {
-                        console.error('Supabase select error:', error);
-                        return { data: [], total: 0 };
-                    }
-                    return { data: data || [], total: count || 0 };
-                } catch (e) {
-                    console.warn('Supabase fetch failed:', e);
-                    return { data: [], total: 0 };
-                }
+                return data.map(r => ({
+                    name: r.name,
+                    school: r.school,
+                    score: r.time_seconds   // untuk keserasian dengan renderLeaderboard
+                }));
             }
 
             // ================================================================
-            // ★★★ 5. Padanan Pertuturan YANG DIPERKETATKAN ★★★ (tidak berubah)
+            // 5. Padanan Pertuturan
             // ================================================================
             function isKeywordMatch(kw, speech) {
                 const clean = s => s.replace(/[^a-z0-9\s]/g, '').toLowerCase().trim();
@@ -1163,15 +1107,13 @@
                 if (kwWords.length === 0) return false;
                 let idx = 0;
                 for (let word of spWords) {
-                    if (idx < kwWords.length && word === kwWords[idx]) {
-                        idx++;
-                    }
+                    if (idx < kwWords.length && word === kwWords[idx]) idx++;
                 }
                 return idx === kwWords.length;
             }
 
             // ================================================================
-            // 6. Keadaan Permainan (tidak berubah)
+            // 6. Keadaan Permainan
             // ================================================================
             let gameActive = false;
             let timerInterval = null;
@@ -1201,7 +1143,7 @@
             let lbCurrentPage = 1;
 
             // ================================================================
-            // 7. Pengecaman Pertuturan (tidak berubah)
+            // 7. Pengecaman Pertuturan
             // ================================================================
             function initSpeechRecognition() {
                 if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
@@ -1322,7 +1264,7 @@
             }
 
             // ================================================================
-            // 8. Pengurusan Kemajuan (tidak berubah)
+            // 8. Pengurusan Kemajuan
             // ================================================================
             function updateProgressDisplay() {
                 let count = 0;
@@ -1335,7 +1277,7 @@
             }
 
             // ================================================================
-            // 9. Kemenangan (tidak berubah)
+            // 9. Kemenangan
             // ================================================================
             function checkAllUnlockedAndFinish() {
                 let allDone = true;
@@ -1367,14 +1309,8 @@
                 document.getElementById('victory-sub').textContent = 'Tahniah! Anda telah memahami maksud Jalur Gemilang!';
                 if (!isGameFinished) {
                     const elapsed = CONFIG.GAME_DURATION - timeLeft;
-                    const record = {
-                        name: playerName,
-                        school: playerSchool,
-                        status: 'completed',
-                        score: elapsed,
-                        timestamp: Date.now()
-                    };
-                    saveRecord(record);
+                    // Simpan ke Supabase (completed)
+                    saveCompletedRecord(playerName, playerSchool, elapsed);
                     document.getElementById('victory-score').textContent = `⏱️ ${elapsed} saat`;
                 }
                 stopRecognition();
@@ -1384,7 +1320,7 @@
             }
 
             // ================================================================
-            // 10. Three.js Init (tidak berubah)
+            // 10. Three.js Init
             // ================================================================
             function initScene() {
                 scene = new THREE.Scene();
@@ -1487,7 +1423,7 @@
             }
 
             // ================================================================
-            // 11. Pengecaman Isyarat Tangan + Kunci Klik (tidak berubah)
+            // 11. Pengecaman Isyarat Tangan + Klik
             // ================================================================
             function startGestureOnly() {
                 if (isCamStarted) return;
@@ -1566,9 +1502,6 @@
                 btn.textContent = '🚀 MULA!';
             }
 
-            // ================================================================
-            // 12. Pengendali Klik (tidak berubah)
-            // ================================================================
             function setupClickHandler() {
                 const canvas = renderer.domElement;
 
@@ -1636,7 +1569,7 @@
             }
 
             // ================================================================
-            // 13. Kemas Kini UI (tidak berubah)
+            // 12. Kemas Kini UI
             // ================================================================
             function updateUI() {
                 const panel = document.getElementById('info-panel');
@@ -1681,7 +1614,7 @@
             }
 
             // ================================================================
-            // 14. Kawalan Permainan (★ 改动：handleGameTimeout 收集 missed_words)
+            // 13. Kawalan Permainan
             // ================================================================
             function startGame() {
                 // Reset state
@@ -1735,6 +1668,21 @@
                 }
             }
 
+            // ★★★ 修改：获取未完成的关键词（答案），而非部件名称 ★★★
+            function getMissedItems() {
+                const missed = [];
+                for (let key in DATA) {
+                    const item = DATA[key];
+                    // 遍历该部件的每个关键词状态
+                    item.status.forEach((done, idx) => {
+                        if (!done) {
+                            missed.push(item.kws[idx]); // 存原始关键词，如 "kesetiaan kepada raja dan negara"
+                        }
+                    });
+                }
+                return missed;
+            }
+
             function handleGameTimeout() {
                 if (isGameFinished) return;
                 isGameFinished = true;
@@ -1742,27 +1690,10 @@
                 if (timerInterval) { clearInterval(timerInterval);
                     timerInterval = null; }
                 stopGuardian();
-                
-                // ★ 改动开始：收集未完成的部分名称
                 const unlockedCount = Object.keys(DATA).filter(key => DATA[key].status.every(s => s === true)).length;
-                const missedParts = [];
-                for (let key in DATA) {
-                    if (!DATA[key].status.every(s => s === true)) {
-                        // 取部分名称（去除表情符号，保留纯文字）
-                        let name = DATA[key].name.replace(/[^\w\s]/g, '').trim();
-                        missedParts.push(name);
-                    }
-                }
-
-                const record = {
-                    name: playerName,
-                    school: playerSchool,
-                    status: 'timeout',
-                    score: unlockedCount,
-                    missed_words: missedParts,
-                    timestamp: Date.now()
-                };
-                saveRecord(record);
+                const missed = getMissedItems();
+                // Simpan ke Supabase (timeout) — 现在 missed 存的是关键词数组
+                saveTimeoutRecord(playerName, playerSchool, missed);
                 isVictory = true;
                 document.getElementById('victory-sub').textContent = '⏰ Masa tamat!';
                 document.getElementById('victory-score').textContent =
@@ -1774,27 +1705,29 @@
             }
 
             // ================================================================
-            // 15. Papan Pendahulu (dari Supabase, dengan async)
+            // 14. Papan Pendahulu (Leaderboard)
             // ================================================================
             async function renderLeaderboard() {
                 const container = document.getElementById('leaderboard-list');
+                const allData = await getLeaderboardData();
                 const pageSize = CONFIG.LB_PAGE_SIZE;
-                const { data, total } = await fetchLeaderboardData(lbCurrentPage, pageSize);
-
-                const totalPages = Math.max(1, Math.ceil(total / pageSize));
+                const totalPages = Math.max(1, Math.ceil(allData.length / pageSize));
                 if (lbCurrentPage > totalPages) lbCurrentPage = totalPages;
                 if (lbCurrentPage < 1) lbCurrentPage = 1;
 
-                if (total === 0) {
+                const start = (lbCurrentPage - 1) * pageSize;
+                const pageData = allData.slice(start, start + pageSize);
+
+                if (allData.length === 0) {
                     container.innerHTML = '<div class="leaderboard-empty">Tiada pemain selesai lagi.</div>';
                 } else {
                     let html = '';
-                    data.forEach((r, idx) => {
-                        const rank = (lbCurrentPage - 1) * pageSize + idx + 1;
+                    pageData.forEach((r, idx) => {
+                        const rank = start + idx + 1;
                         const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
                         html += `<div class="lb-item">
                             <span class="rank">${medal}</span>
-                            <span class="name">${escapeHtml(r.player_name)}</span>
+                            <span class="name">${escapeHtml(r.name)}</span>
                             <span class="score">${r.score} saat</span>
                         </div>`;
                     });
@@ -1813,7 +1746,7 @@
             }
 
             // ================================================================
-            // 16. Butang Kuning (tidak berubah)
+            // 15. Butang Kuning
             // ================================================================
             function setupYellowButton() {
                 document.getElementById('btn-yellow').addEventListener('click', () => {
@@ -1830,7 +1763,7 @@
             }
 
             // ================================================================
-            // 17. Gelung Animasi (tidak berubah)
+            // 16. Gelung Animasi
             // ================================================================
             function animate() {
                 requestAnimationFrame(animate);
@@ -1899,7 +1832,7 @@
             }
 
             // ================================================================
-            // 18. Saiz Tetingkap & Skrin Penuh (tidak berubah)
+            // 17. Saiz Tetingkap & Skrin Penuh
             // ================================================================
             window.addEventListener('resize', () => {
                 if (camera) {
@@ -1919,7 +1852,7 @@
             window.toggleFullScreen = toggleFullScreen;
 
             // ================================================================
-            // 19. Permulaan (tidak berubah)
+            // 18. Permulaan
             // ================================================================
             async function boot() {
                 initScene();
@@ -1977,14 +1910,14 @@
                 setTimeout(() => {
                     if (step2Btn.disabled) {
                         step2Btn.disabled = false;
-                        step2Btn.textContent = '🚀 MULA! (klik sahaja)';
+                        step2Btn.textContent = '🚀 MULA! (tunggu sebentar)';
                     }
                 }, 5000);
 
                 // Sediakan pengendali klik selepas renderer siap
                 setTimeout(setupClickHandler, 100);
 
-                // ===== Papan Pendahulu (dengan async) =====
+                // ===== Papan Pendahulu =====
                 document.getElementById('btn-leaderboard').addEventListener('click', async () => {
                     lbCurrentPage = 1;
                     await renderLeaderboard();
@@ -1999,15 +1932,17 @@
                     }
                 });
                 document.getElementById('lb-prev').addEventListener('click', async () => {
-                    if (lbCurrentPage > 1) {
-                        lbCurrentPage--;
-                        await renderLeaderboard();
-                    }
+                    if (lbCurrentPage > 1) { lbCurrentPage--;
+                        await renderLeaderboard(); }
                 });
                 document.getElementById('lb-next').addEventListener('click', async () => {
-                    lbCurrentPage++;
-                    await renderLeaderboard();
+                    const allData = await getLeaderboardData();
+                    const total = Math.ceil(allData.length / CONFIG.LB_PAGE_SIZE);
+                    if (lbCurrentPage < total) { lbCurrentPage++;
+                        await renderLeaderboard(); }
                 });
+
+                // ===== (Tiada Panel Rekod) =====
             }
 
             window.onload = boot;
