@@ -116,9 +116,6 @@
             -webkit-text-fill-color: var(--gold-bright);
             background: none;
         }
-        .status-title.dbl-click-hint { cursor: pointer; }
-        .status-title.dbl-click-hint::after { content: '⏎'; font-size: 10px; color: #555; margin-left: 4px; opacity: 0.3; }
-
         .status-timer {
             position: relative;
             font-family: var(--font-mono);
@@ -656,185 +653,6 @@
             color: var(--gold-bright);
         }
 
-        /* ===== Panel Rekod (Tersembunyi) ===== */
-        #records-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(18px);
-            z-index: 6000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        #records-panel.active { display: flex; }
-        .records-card {
-            background: linear-gradient(165deg, var(--panel-2), #0a0a10);
-            border: 1px solid var(--gold-line);
-            border-radius: 28px;
-            padding: 12px 36px 32px;
-            max-width: 840px;
-            width: 100%;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9);
-            position: relative;
-        }
-        .records-card h2 {
-            color: var(--gold-bright);
-            font-family: var(--font-display);
-            font-size: 26px;
-            margin: 22px 0 20px 0;
-            text-align: center;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
-            padding-bottom: 16px;
-            letter-spacing: 0.5px;
-        }
-        .records-tabs {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-        .records-tabs button {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: var(--ink-dim);
-            padding: 6px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 14px;
-            font-family: var(--font-body);
-            transition: 0.2s;
-        }
-        .records-tabs button.active {
-            border-color: var(--gold);
-            color: var(--gold-bright);
-            background: rgba(255, 204, 0, 0.08);
-        }
-        .records-tabs button:hover {
-            border-color: var(--gold-line);
-            color: var(--ivory);
-        }
-        .records-list-container {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 12px;
-        }
-        .records-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        .records-table th {
-            background: rgba(255, 204, 0, 0.09);
-            color: var(--gold-bright);
-            padding: 12px 10px;
-            text-align: left;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            border-bottom: 2px solid rgba(255, 204, 0, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 2;
-        }
-        .records-table td {
-            padding: 11px 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: var(--ink);
-        }
-        .records-table tbody tr:nth-child(odd) { background: rgba(255,255,255,0.02); }
-        .records-table .badge {
-            display: inline-block;
-            padding: 3px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .badge-completed {
-            background: rgba(28, 138, 124, 0.3);
-            color: #7fe8d4;
-            border: 1px solid rgba(127, 232, 212, 0.3);
-        }
-        .badge-timeout {
-            background: rgba(125, 40, 54, 0.35);
-            color: #f2a3af;
-            border: 1px solid rgba(242, 163, 175, 0.3);
-        }
-        .records-empty {
-            text-align: center;
-            color: var(--ink-dim);
-            padding: 40px 0;
-            font-size: 18px;
-            font-family: var(--font-display);
-        }
-        .records-pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-            margin-top: 8px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .records-pagination button {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--ink);
-            padding: 6px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .records-pagination button:hover:not(:disabled) {
-            background: rgba(255, 204, 0, 0.15);
-            border-color: var(--gold-line);
-            color: var(--gold-bright);
-        }
-        .records-pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-        .records-pagination span { color: var(--ink-dim); font-size: 14px; }
-        .records-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 6px;
-        }
-        .btn-export,
-        .btn-close-records {
-            background: rgba(255,255,255,0.04);
-            color: var(--ink);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 40px;
-            padding: 8px 24px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            touch-action: manipulation;
-        }
-        .btn-export:hover,
-        .btn-close-records:hover {
-            background: rgba(255, 204, 0, 0.12);
-            border-color: var(--gold-line);
-            color: var(--gold-bright);
-        }
-        .btn-export {
-            color: #8cbf9c;
-            border-color: rgba(28, 138, 124, 0.3);
-        }
-        .btn-export:hover {
-            background: rgba(28, 138, 124, 0.15);
-            border-color: var(--teal);
-            color: #7fe8d4;
-        }
-
         /* ===== Skrin Kemenangan ===== */
         #victory-screen {
             position: fixed;
@@ -944,13 +762,8 @@
                 border-radius: 28px;
             }
             #victory-screen .trophy { margin-top: -12px; }
-            .records-card { padding: 8px 16px 20px; border-radius: 20px; }
-            .records-card h2 { font-size: 20px; }
-            .records-table { font-size: 12px; }
-            .records-table th, .records-table td { padding: 6px 4px; }
             .leaderboard-card { padding: 24px 20px; border-radius: 20px; }
-            .lb-pagination button,
-            .records-pagination button { padding: 4px 12px; font-size: 12px; }
+            .lb-pagination button { padding: 4px 12px; font-size: 12px; }
             #mic-status { font-size: 16px; }
             #btn-yellow { display: none !important; }
             #info-panel.layout-6 {
@@ -1033,30 +846,6 @@
         </div>
     </div>
 
-    <!-- ===== Panel Rekod (Tersembunyi) ===== -->
-    <div id="records-panel">
-        <div class="records-card">
-            <h2>📊 Rekod Penuh</h2>
-            <div class="records-tabs">
-                <button class="active" data-tab="all">Semua</button>
-                <button data-tab="completed">Selesai</button>
-                <button data-tab="timeout">Masa Tamat</button>
-            </div>
-            <div class="records-list-container">
-                <div id="records-list"></div>
-            </div>
-            <div class="records-pagination">
-                <button id="records-prev" disabled>Sebelum</button>
-                <span id="records-page-info">1 / 1</span>
-                <button id="records-next" disabled>Seterusnya</button>
-            </div>
-            <div class="records-actions">
-                <button class="btn-export" id="btn-export-excel">📥 Export Excel</button>
-                <button class="btn-close-records" id="btn-close-records">Tutup</button>
-            </div>
-        </div>
-    </div>
-
     <!-- ===== Skrin Kemenangan ===== -->
     <div id="victory-screen">
         <div class="trophy">🏆</div>
@@ -1069,7 +858,7 @@
     <!-- ===== Bar Status ===== -->
     <div id="status-bar">
         <div class="status-row">
-            <span class="status-title dbl-click-hint" id="status-title-double">
+            <span class="status-title" id="status-title">
                 ⚜️ Jalur Gemilang
                 <span class="progress-text" id="progress-indicator">Selesai: 0/6</span>
             </span>
@@ -1113,9 +902,21 @@
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js">
     </script>
 
+    <!-- ===== Supabase Client ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+
     <script>
         (function() {
             'use strict';
+
+            // ================================================================
+            // 0. Supabase Configuration (using your new keys)
+            // ================================================================
+            const SUPABASE_URL = 'https://odnluezykfkbumlfcsjd.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kbmx1ZXp5a2ZrYnVtbGZjc2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMjA1NzcsImV4cCI6MjEwMDc5NjU3N30.2qyIATzruUvg6ZE6KCyYwPepYWlx1j9t5yMv-Iv9IvY';
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase connected');
 
             // ================================================================
             // 1. Konfigurasi
@@ -1129,8 +930,7 @@
                 REC_GUARD_INTERVAL: 800,
                 KEEPALIVE_INTERVAL: 2000,
                 MAX_RECORDS: 100,
-                LB_PAGE_SIZE: 15,
-                RECORDS_PAGE_SIZE: 15
+                LB_PAGE_SIZE: 15
             };
 
             // ================================================================
@@ -1258,19 +1058,20 @@
             }
 
             // ================================================================
-            // 4. Pengurusan Rekod
+            // 4. Pengurusan Rekod (localStorage backup + Supabase sync)
             // ================================================================
             const RECORDS_KEY = 'jalur_records';
 
-            function getRecords() {
+            // ---- Local backup ----
+            function getLocalRecords() {
                 try {
                     const data = localStorage.getItem(RECORDS_KEY);
                     return data ? JSON.parse(data) : [];
                 } catch { return []; }
             }
 
-            function saveRecord(record) {
-                const records = getRecords();
+            function saveLocalRecord(record) {
+                const records = getLocalRecords();
                 records.push(record);
                 if (records.length > CONFIG.MAX_RECORDS) records = records.slice(-CONFIG.MAX_RECORDS);
                 try {
@@ -1278,30 +1079,66 @@
                 } catch (e) {}
             }
 
-            function getLeaderboardData() {
-                const records = getRecords();
-                const completed = records.filter(r => r.status === 'completed');
-                completed.sort((a, b) => a.score - b.score);
-                return completed;
+            // ---- Upload to Supabase ----
+            async function uploadRecordToSupabase(record) {
+                try {
+                    const { error } = await supabase
+                        .from('scores')
+                        .insert([{
+                            player_name: record.name,
+                            school: record.school,
+                            status: record.status,
+                            score: record.score,
+                            timestamp: record.timestamp
+                        }]);
+                    if (error) {
+                        console.error('Supabase insert error:', error);
+                    } else {
+                        console.log('✅ Record uploaded to Supabase');
+                    }
+                } catch (e) {
+                    console.warn('Supabase upload failed:', e);
+                }
+            }
+
+            // ---- Main save function ----
+            function saveRecord(record) {
+                // Always save locally
+                saveLocalRecord(record);
+                // Upload to cloud (non-blocking)
+                uploadRecordToSupabase(record);
+            }
+
+            // ---- Fetch leaderboard from Supabase ----
+            async function fetchLeaderboardData(page, pageSize) {
+                const from = (page - 1) * pageSize;
+                const to = from + pageSize - 1;
+                try {
+                    const { data, error, count } = await supabase
+                        .from('scores')
+                        .select('player_name, score', { count: 'exact' })
+                        .eq('status', 'completed')
+                        .order('score', { ascending: true })
+                        .range(from, to);
+                    if (error) {
+                        console.error('Supabase select error:', error);
+                        return { data: [], total: 0 };
+                    }
+                    return { data: data || [], total: count || 0 };
+                } catch (e) {
+                    console.warn('Supabase fetch failed:', e);
+                    return { data: [], total: 0 };
+                }
             }
 
             // ================================================================
-            // ★★★ 5. Padanan Pertuturan YANG DIPERKETATKAN ★★★
+            // ★★★ 5. Padanan Pertuturan YANG DIPERKETATKAN ★★★ (tidak berubah)
             // ================================================================
-            // Hanya dua kaedah padanan:
-            // 1. Frasa tepat (selepas membuang tanda baca dan jarak, semua perkataan mesti sama)
-            // 2. Suburutan tertib (semua perkataan dalam keyword mesti hadir dalam speech mengikut urutan, dan setiap perkataan mesti sama)
-            // Tiada lagi padanan edit distance yang longgar.
             function isKeywordMatch(kw, speech) {
-                // Bersihkan: buang aksara bukan huruf/angka, kekalkan ruang, kecilkan huruf
                 const clean = s => s.replace(/[^a-z0-9\s]/g, '').toLowerCase().trim();
                 const cleanKw = clean(kw);
                 const cleanSpeech = clean(speech);
-                
-                // 1. Padanan tepat keseluruhan frasa (setelah dibersihkan)
                 if (cleanKw === cleanSpeech) return true;
-                
-                // 2. Padanan suburutan tertib (setiap perkataan mesti sama, dan mengikut urutan)
                 const kwWords = cleanKw.split(/\s+/).filter(w => w.length > 0);
                 const spWords = cleanSpeech.split(/\s+/).filter(w => w.length > 0);
                 if (kwWords.length === 0) return false;
@@ -1315,7 +1152,7 @@
             }
 
             // ================================================================
-            // 6. Keadaan Permainan
+            // 6. Keadaan Permainan (tidak berubah)
             // ================================================================
             let gameActive = false;
             let timerInterval = null;
@@ -1343,11 +1180,9 @@
             let selectFactor = 0;
 
             let lbCurrentPage = 1;
-            let recordsCurrentPage = 1;
-            let recordsCurrentTab = 'all';
 
             // ================================================================
-            // 7. Pengecaman Pertuturan (dengan kestabilan)
+            // 7. Pengecaman Pertuturan (tidak berubah)
             // ================================================================
             function initSpeechRecognition() {
                 if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
@@ -1367,7 +1202,6 @@
                     let speech = e.results[lastIndex][0].transcript.toLowerCase().trim();
                     speech = speech.replace(/[，。、！？\s]+/g, ' ').trim();
 
-                    // Semua bahagian menggunakan padanan umum yang ketat (tiada rawatan khas)
                     const data = DATA[currentMode];
                     if (!data) return;
                     let matchedSomething = false;
@@ -1469,7 +1303,7 @@
             }
 
             // ================================================================
-            // 8. Pengurusan Kemajuan
+            // 8. Pengurusan Kemajuan (tidak berubah)
             // ================================================================
             function updateProgressDisplay() {
                 let count = 0;
@@ -1482,7 +1316,7 @@
             }
 
             // ================================================================
-            // 9. Kemenangan
+            // 9. Kemenangan (tidak berubah)
             // ================================================================
             function checkAllUnlockedAndFinish() {
                 let allDone = true;
@@ -1783,7 +1617,7 @@
             }
 
             // ================================================================
-            // 13. Kemas Kini UI (paparan menggunakan displayKws untuk huruf besar)
+            // 13. Kemas Kini UI (tidak berubah)
             // ================================================================
             function updateUI() {
                 const panel = document.getElementById('info-panel');
@@ -1828,7 +1662,7 @@
             }
 
             // ================================================================
-            // 14. Kawalan Permainan
+            // 14. Kawalan Permainan (tidak berubah)
             // ================================================================
             function startGame() {
                 // Reset state
@@ -1909,29 +1743,27 @@
             }
 
             // ================================================================
-            // 15. Papan Pendahulu & Rekod (tidak berubah)
+            // 15. Papan Pendahulu (dari Supabase, dengan async)
             // ================================================================
-            function renderLeaderboard() {
+            async function renderLeaderboard() {
                 const container = document.getElementById('leaderboard-list');
-                const allData = getLeaderboardData();
                 const pageSize = CONFIG.LB_PAGE_SIZE;
-                const totalPages = Math.max(1, Math.ceil(allData.length / pageSize));
+                const { data, total } = await fetchLeaderboardData(lbCurrentPage, pageSize);
+
+                const totalPages = Math.max(1, Math.ceil(total / pageSize));
                 if (lbCurrentPage > totalPages) lbCurrentPage = totalPages;
                 if (lbCurrentPage < 1) lbCurrentPage = 1;
 
-                const start = (lbCurrentPage - 1) * pageSize;
-                const pageData = allData.slice(start, start + pageSize);
-
-                if (allData.length === 0) {
+                if (total === 0) {
                     container.innerHTML = '<div class="leaderboard-empty">Tiada pemain selesai lagi.</div>';
                 } else {
                     let html = '';
-                    pageData.forEach((r, idx) => {
-                        const rank = start + idx + 1;
+                    data.forEach((r, idx) => {
+                        const rank = (lbCurrentPage - 1) * pageSize + idx + 1;
                         const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
                         html += `<div class="lb-item">
                             <span class="rank">${medal}</span>
-                            <span class="name">${escapeHtml(r.name)}</span>
+                            <span class="name">${escapeHtml(r.player_name)}</span>
                             <span class="score">${r.score} saat</span>
                         </div>`;
                     });
@@ -1943,62 +1775,6 @@
                 document.getElementById('lb-next').disabled = (lbCurrentPage >= totalPages);
             }
 
-            function renderRecords(tab = recordsCurrentTab) {
-                recordsCurrentTab = tab;
-                const records = getRecords();
-                let filtered = [];
-                if (tab === 'all') filtered = records;
-                else if (tab === 'completed') filtered = records.filter(r => r.status === 'completed');
-                else if (tab === 'timeout') filtered = records.filter(r => r.status === 'timeout');
-                filtered.sort((a, b) => b.timestamp - a.timestamp);
-
-                const pageSize = CONFIG.RECORDS_PAGE_SIZE;
-                const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-                if (recordsCurrentPage > totalPages) recordsCurrentPage = totalPages;
-                if (recordsCurrentPage < 1) recordsCurrentPage = 1;
-
-                const start = (recordsCurrentPage - 1) * pageSize;
-                const pageData = filtered.slice(start, start + pageSize);
-
-                const container = document.getElementById('records-list');
-                if (filtered.length === 0) {
-                    container.innerHTML = '<div class="records-empty">Tiada rekod.</div>';
-                } else {
-                    let html = `<table class="records-table">
-                        <thead><tr>
-                            <th>#</th><th>Nama</th><th>Sekolah</th><th>Status</th><th>Skor</th><th>Tarikh</th>
-                        </tr></thead><tbody>`;
-                    pageData.forEach((r, idx) => {
-                        const realIdx = start + idx + 1;
-                        const statusText = r.status === 'completed' ? 'Selesai' : 'Masa tamat';
-                        const badgeClass = r.status === 'completed' ? 'badge-completed' : 'badge-timeout';
-                        const scoreDisplay = r.status === 'completed' ? `${r.score} saat` :
-                            `${r.score}/${TOTAL_ITEMS} bahagian`;
-                        const dateStr = new Date(r.timestamp).toLocaleString('ms-MY', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-                        html += `<tr>
-                            <td>${realIdx}</td>
-                            <td>${escapeHtml(r.name)}</td>
-                            <td>${escapeHtml(r.school)}</td>
-                            <td><span class="badge ${badgeClass}">${statusText}</span></td>
-                            <td>${scoreDisplay}</td>
-                            <td>${dateStr}</td>
-                        </tr>`;
-                    });
-                    html += '</tbody></table>';
-                    container.innerHTML = html;
-                }
-
-                document.getElementById('records-page-info').textContent = `${recordsCurrentPage} / ${totalPages}`;
-                document.getElementById('records-prev').disabled = (recordsCurrentPage <= 1);
-                document.getElementById('records-next').disabled = (recordsCurrentPage >= totalPages);
-            }
-
             function escapeHtml(text) {
                 const div = document.createElement('div');
                 div.textContent = text;
@@ -2006,35 +1782,7 @@
             }
 
             // ================================================================
-            // 16. Export Excel
-            // ================================================================
-            function exportExcel() {
-                const records = getRecords();
-                if (records.length === 0) {
-                    alert('Tiada rekod untuk dieksport.');
-                    return;
-                }
-                const data = records.map(r => ({
-                    'Nama': r.name,
-                    'Sekolah': r.school,
-                    'Status': r.status === 'completed' ? 'Selesai' : 'Masa tamat',
-                    'Skor': r.status === 'completed' ? `${r.score} saat` : `${r.score}/${TOTAL_ITEMS} bahagian`,
-                    'Tarikh': new Date(r.timestamp).toLocaleString('ms-MY', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    })
-                }));
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.json_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, ws, 'Rekod');
-                XLSX.writeFile(wb, `Jalur_Rekod_${new Date().toISOString().slice(0,10)}.xlsx`);
-            }
-
-            // ================================================================
-            // 17. Butang Kuning
+            // 16. Butang Kuning (tidak berubah)
             // ================================================================
             function setupYellowButton() {
                 document.getElementById('btn-yellow').addEventListener('click', () => {
@@ -2051,7 +1799,7 @@
             }
 
             // ================================================================
-            // 18. Gelung Animasi
+            // 17. Gelung Animasi (tidak berubah)
             // ================================================================
             function animate() {
                 requestAnimationFrame(animate);
@@ -2120,7 +1868,7 @@
             }
 
             // ================================================================
-            // 19. Saiz Tetingkap & Skrin Penuh
+            // 18. Saiz Tetingkap & Skrin Penuh (tidak berubah)
             // ================================================================
             window.addEventListener('resize', () => {
                 if (camera) {
@@ -2140,7 +1888,7 @@
             window.toggleFullScreen = toggleFullScreen;
 
             // ================================================================
-            // 20. Permulaan
+            // 19. Permulaan (tidak berubah, tetapi event listener untuk leaderboard diubah)
             // ================================================================
             async function boot() {
                 initScene();
@@ -2205,10 +1953,10 @@
                 // Sediakan pengendali klik selepas renderer siap
                 setTimeout(setupClickHandler, 100);
 
-                // ===== Papan Pendahulu =====
-                document.getElementById('btn-leaderboard').addEventListener('click', () => {
+                // ===== Papan Pendahulu (dengan async) =====
+                document.getElementById('btn-leaderboard').addEventListener('click', async () => {
                     lbCurrentPage = 1;
-                    renderLeaderboard();
+                    await renderLeaderboard();
                     document.getElementById('leaderboard-panel').classList.add('active');
                 });
                 document.getElementById('btn-close-lb').addEventListener('click', () => {
@@ -2219,57 +1967,17 @@
                         document.getElementById('leaderboard-panel').classList.remove('active');
                     }
                 });
-                document.getElementById('lb-prev').addEventListener('click', () => {
-                    if (lbCurrentPage > 1) { lbCurrentPage--;
-                        renderLeaderboard(); }
-                });
-                document.getElementById('lb-next').addEventListener('click', () => {
-                    const total = Math.ceil(getLeaderboardData().length / CONFIG.LB_PAGE_SIZE);
-                    if (lbCurrentPage < total) { lbCurrentPage++;
-                        renderLeaderboard(); }
-                });
-
-                // ===== Panel Rekod (Tersembunyi - klik dua kali pada tajuk) =====
-                document.getElementById('status-title-double').addEventListener('dblclick', () => {
-                    recordsCurrentPage = 1;
-                    renderRecords(recordsCurrentTab);
-                    document.getElementById('records-panel').classList.add('active');
-                });
-
-                document.querySelectorAll('.records-tabs button').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.records-tabs button').forEach(b => b.classList.remove(
-                            'active'));
-                        btn.classList.add('active');
-                        recordsCurrentPage = 1;
-                        renderRecords(btn.dataset.tab);
-                    });
-                });
-                document.getElementById('btn-close-records').addEventListener('click', () => {
-                    document.getElementById('records-panel').classList.remove('active');
-                });
-                document.getElementById('records-panel').addEventListener('click', (e) => {
-                    if (e.target === e.currentTarget) {
-                        document.getElementById('records-panel').classList.remove('active');
+                document.getElementById('lb-prev').addEventListener('click', async () => {
+                    if (lbCurrentPage > 1) {
+                        lbCurrentPage--;
+                        await renderLeaderboard();
                     }
                 });
-                document.getElementById('records-prev').addEventListener('click', () => {
-                    if (recordsCurrentPage > 1) { recordsCurrentPage--;
-                        renderRecords(recordsCurrentTab); }
+                document.getElementById('lb-next').addEventListener('click', async () => {
+                    // 先尝试增加页数，由 renderLeaderboard 自动修正越界
+                    lbCurrentPage++;
+                    await renderLeaderboard();
                 });
-                document.getElementById('records-next').addEventListener('click', () => {
-                    const records = getRecords();
-                    let filtered = [];
-                    if (recordsCurrentTab === 'all') filtered = records;
-                    else if (recordsCurrentTab === 'completed') filtered = records.filter(r => r.status ===
-                        'completed');
-                    else if (recordsCurrentTab === 'timeout') filtered = records.filter(r => r.status ===
-                        'timeout');
-                    const total = Math.ceil(filtered.length / CONFIG.RECORDS_PAGE_SIZE);
-                    if (recordsCurrentPage < total) { recordsCurrentPage++;
-                        renderRecords(recordsCurrentTab); }
-                });
-                document.getElementById('btn-export-excel').addEventListener('click', exportExcel);
             }
 
             window.onload = boot;
